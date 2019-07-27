@@ -1,0 +1,220 @@
+Именно с такой мыслью я  приступил к вопросу, иначе зачем понадобилось бы мигрировать <a href="./uploads/yandex_800463.xml" target="_blank">такой магазин</a> на площадку Opencart.
+
+<pre><code class="language-xml">
+<xmp>
+<categories>
+<category id="156196">Электростанции</category>
+<category id="156197" parentId="156196">Дизельные электростанции</category>
+<category id="180187" parentId="156197">TSS Baudouin</category>
+<category id="180257" parentId="180256">Дизельные сварочные генераторы</category>
+<category id="180258" parentId="180256">Бензиновые сварочные генераторы</category>
+<category id="180274" parentId="156196">Дизельные высоковольтные электростанции</category>
+<category id="156234">Блок-контейнеры</category>
+<category id="156235" parentId="156234">Мини блок-контейнеры серии БК</category>
+<category id="156236" parentId="156234">Панельные блок-контейнеры ПБК</category>
+<category id="156237" parentId="156236">Нестандартные контейнеры</category>
+<category id="172490" parentId="156240">Салазки</category>
+<category id="156241">Строительное оборудование</category>
+<category id="180204" parentId="156241">Мотопомпы бензиновые</category>
+<category id="180205" parentId="180204">Мотопомпы для грязной воды</category>
+<category id="174408" parentId="174406">Тепловентиляторы и тепловые пушки электрические</category>
+<category id="174409" parentId="174406">Тепловые пушки дизельные непрямого нагрева</category>
+<category id="174410" parentId="174406">Тепловые пушки дизельные прямого нагрева</category>
+<category id="174411" parentId="174406">Газовые тепловые пушки</category>
+<category id="156263">Сварочное оборудование</category>
+<category id="156264" parentId="156263">Ручная дуговая (MMA)</category>
+<category id="156267" parentId="156263">Полуавтоматическая (MIG/MAG)</category>
+<category id="156265" parentId="156263">Аргонодуговая (TIG)</category>
+<category id="156266" parentId="156263">Плазменная резка (CUT)</category>
+<category id="177624" parentId="156263">Универсальные (MMA/TIG/CUT)</category>
+<category id="177625" parentId="156263">Приварка шпилек (STUD)</category>
+<category id="156269" parentId="156263">Сварочные маски</category>
+<category id="180200" parentId="177627">CUT Расходники и комплектующие</category>
+<category id="156271">Электротехническое оборудование</category>
+<category id="177560" parentId="156271">Шкафы автоматического ввода резерва (АВР)</category>
+<category id="165127" parentId="156271">Блоки ATS (реверсивные рубильники и контакторы)</category>
+<category id="165128" parentId="165127">AISIKAI</category>
+<category id="158689" parentId="156271">Регуляторы напряжения для синхронных генераторов (AVR)</category>
+<category id="165131" parentId="158689">Engga</category>
+<category id="165134" parentId="158689">Mecc Alte</category>
+<category id="156284">Двигатели</category>
+<category id="156285" parentId="156284">TSS-Diesel</category>
+<category id="156286" parentId="156285">TDY</category>
+<category id="156287" parentId="156285">TDW</category>
+<category id="156295" parentId="156285">TDH</category>
+<category id="180154" parentId="156285">TDX</category>
+<category id="156314" parentId="156284">Бензиновые двигатели ТСС</category>
+<category id="177639" parentId="156284">Weichai</category>
+<category id="165081">Оборудование и комплектующие электростанции</category>
+<category id="180264" parentId="165081">Автоматика для портативных станций</category>
+<category id="165082" parentId="165081">Панели управления и контроллеры</category>
+<category id="165083" parentId="165082">DeepSea</category>
+<category id="165084" parentId="165082">Harsen</category>
+<category id="165106" parentId="165104">Тракторные</category>
+<category id="165109" parentId="165081">Системы удаленного мониторинга и управления ДГУ</category>
+<category id="165096" parentId="165092">Подогреватели топливозаборника</category>
+<category id="165107" parentId="165081">Системы подзарядки АКБ</category>
+<category id="177553">Синхронные генераторы</category>
+<category id="177554" parentId="177553">TSS SA</category>
+<category id="177555" parentId="177553">Leroy Somer</category>
+<category id="177632" parentId="177553">Mecc Alte</category>
+<category id="180194" parentId="177553">Sincro</category>
+</categories>
+...
+</xmp>
+</code>
+</pre>
+
+
+Сначала научимся немножко парсить. Возьмем за движок <a href="http://php.net/manual/ru/book.simplexml.php">SimpleXML</a> как самый медленный по <a href="https://habr.com/post/330240/">бенчмаркам этого поста</a>, но со всем необходимым из коробки. SimpleXML имеет всего три функции, понадобится нам всего одна
+<code class="language-php">simplexml_load_file()</code>. Загрузим файл в обьект SimpleXML <code class="language-php">$xml_file</code>
+
+<pre><code class="language-php">
+$xml_file = simplexml_load_file('./yandex_800463.xml');
+</code></pre>
+
+Чтобы получить из<code class="language-php">$xml_file</code> необходимую нам ноду, используем оператор получения доступа <code class="language-php"> -></code> одним из указанных способов
+<pre><code class="language-php">
+$xml_file->categories->category;
+$xml_file->categories->category[0];
+$xml_file->categories->{'category'};
+</code>
+</pre>
+
+С этим проблем не  возникло. Возникли они на этапе интегрирования данных в корректном виде. Спарсить ноды содержащее имя "category" не составило труда в отличии от правильной вложенности субкатегорий, за это отвечает таблица category_path
+
+За категории отвечает главная таблица "category" с ключевым полем в качестве идентификатора, которые в свою очередь должны содержаться в следующих полях таблиц.
+<img src="./img/posts/opencart_schema_category.jpg" alt="opencart">
+
+Вернемся к category_path, тут важно понять схему проставки уровней для категорий и субкатегорий. 
+<img src="./img/posts/category_path.jpg" style="width:50%" alt="opencart">
+ В чем вам должен помочь дядюшка Йода, но это неточно
+<img src="./img/posts/uncle_yoda.jpeg" style="width:50%"  alt="opencart">
+Код, который отвечает за парсинг категорий. Немножко регулярок, немножко вложенных циклов.
+
+<pre><code class="language-php">
+foreach ($xml_file->shop->categories as $key) {
+
+	   	$db->query("INSERT INTO ".DB_PREFIX."category SET `top`= 0, `column` = 1 , status = 1, date_modified = NOW(), date_added = NOW()");
+	   	$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+	   	$generated=$db->insert_id; 
+	    $db->query("INSERT INTO ".DB_PREFIX."category_description SET category_id = LAST_INSERT_ID(), language_id = ".(int)$language_id.", name = '".(string)$key."', description = '".(string)$key."', meta_title = '".(string)$key."', meta_description = '".(string)$key."', meta_keyword = ''");
+	    $db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+	    $db->query("INSERT INTO ".DB_PREFIX."category_to_store SET category_id = LAST_INSERT_ID(), store_id = '" . (int)$store_id . "'");
+	    $db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+		//'category_filter' skipped;
+	    //'category_to_store' skipped;
+	    $db->query("INSERT INTO ".DB_PREFIX."seo_url SET store_id = LAST_INSERT_ID(), language_id = '".(int)$language_id."', keyword = '".translit((string)$key)."'");
+	    $db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+
+			    if ($key{'parentId'}==''){ 
+					$db->query("UPDATE ".DB_PREFIX."category SET `parent_id`=".$generated." WHERE category_id=".$generated);
+					$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+					//main categories
+					$db->query("INSERT INTO ".DB_PREFIX."category_path SET `category_id`=".$generated.",`path_id` = ".$generated.", `level` =0");
+					$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+					$db->query("UPDATE ".DB_PREFIX."category_path SET `level` = 0 WHERE `path_id` = ".$generated);
+					$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+					$db->query("UPDATE ".DB_PREFIX."seo_url SET  query = CONCAT('path=',".$generated."), push = CONCAT('route=product/category&path=',".$generated.") WHERE store_id=".$generated);	
+					$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+					$generated_stop_count=$generated;
+					
+			    }
+
+		$db->query("UPDATE ".DB_PREFIX."category SET `parent_id`=".$generated_stop_count);
+		$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+		//firest query related to relations between entities, the second one exactly entities (subcategories)
+		$db->query("INSERT INTO ".DB_PREFIX."category_path SET `category_id` = ".$generated.",`path_id` = ".$generated.",`level` = 1");
+		$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+
+		$db->query("INSERT INTO ".DB_PREFIX."category_path SET `category_id` = ".$generated.",`path_id` = ".$generated_stop_count.",`level` = 0");
+		$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+
+		$db->query("UPDATE ".DB_PREFIX."seo_url SET  query = CONCAT('path=',".$generated_stop_count.",'_', ".$generated."), push = CONCAT('route=product/category&path=',".$generated_stop_count.",'_', ".$generated.") WHERE query=''");
+		$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+		$db->query("UPDATE ".DB_PREFIX."seo_url SET  store_id=0");
+		$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+
+		$db->close();
+		unset($key);
+		 }</code></pre>
+
+После того, как в админке все категории заняли свое положенное место бежим <del>заказывать проституток и цирковых карликов</del> парсить продукцию
+<img src="./img/posts/opencart_category.jpg">
+
+С продукцией оказалось немножко проще, главным образом, что логически никак не удалось связать их с вышеописанными категориями, что и оставляем <del>заказчика один на один с проблемой</del> вежливо интересуемся, готов ли он за <del>еду</del> дополнительную плату решить проблему. Можно было бы заморочиться с прохождением файла циклом, присваивая нодам товаров счетчик категорий или попросить в конце концов дядю Йоду, но на этом к сожалению все, дети.
+Код парсинга товаров приведен ниже.
+
+<pre><code class="language-php">
+
+	foreach($xml_file->shop->offers->offer as $key_offer){
+		$i++;
+			foreach($key_offer->param as $key_param){
+					$preg_size=preg_match_all("/размеры/ium",$key_param['name']);
+						if($preg_size>0){
+							$size=$key_param;				
+							preg_replace('/\s\s+/','', $size);
+							$size=explode( 'х', $size);
+						}
+
+					$preg_weight=preg_match_all("/Масса, кг/ium",$key_param['name']);
+						if($preg_weight>0){				
+							$weight=$key_param;			
+							preg_replace('/\s\s+/','', $weight);
+						}
+					$all_params.=$key_param['name']." - ".$key_param." ";
+
+			}
+
+		$db->query("INSERT INTO ".DB_PREFIX."product SET model = '" . $key_offer{'id'}. "', sku = '', upc = '', ean = '', jan = '', isbn = '', mpn = '', location = '', quantity = '" . (int)$quantity. "', minimum = '', subtract = '', stock_status_id = '', date_available = '" .date('o-m-d') . "', manufacturer_id = '" . (int)$i . "', shipping = '', price = '" . (float)$key_offer{'price'} . "', points = '', weight = '" .(float)$weight."', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$size[0] . "', width = '" . (float)$size[1] . "', height = '".$size[2]."', length_class_id = '', status = 1, tax_class_id = 9, sort_order = 0, date_added = NOW(), date_modified = NOW()");
+		$generated_product_id=$db->insert_id;
+		$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+
+		$db->query("INSERT INTO ".DB_PREFIX."product_description SET product_id = '" . (int)$generated_product_id . "', language_id = 1, name = '" . $key_offer->name. "', description = '" . $key_offer->description. "', tag = '" .translit($key_offer->name). "', meta_title = '".translit($key_offer->name)."', meta_description = '" . translit($key_offer->description). "', meta_keyword = '" .translit($key_offer->name). "'");
+		$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+		$db->query("INSERT INTO ".DB_PREFIX."product_to_store SET product_id = '" .$generated_product_id. "', store_id = '" . (int)$store_id . "'");
+		$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+		$db->query("INSERT INTO ".DB_PREFIX."product_attribute SET product_id = '".$generated_product_id."', attribute_id = '" .(int)$product_attribute."', language_id = '" .$language_id. "', text = '" .$all_params. "'");
+		$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;	
+		$db->query("INSERT INTO ".DB_PREFIX."product_to_layout SET product_id = '" .$generated_product_id. "', store_id = '" .$store_id. "', layout_id = 0");
+		$db->affected_rows<0? print "undone..<br>": print "done..<br>" ;
+
+
+unset($key_param,$key_offer);
+
+}
+
+$db->close();
+
+}
+else{
+	echo "file yandex_800463.xml doesn't exist";
+}
+
+}
+
+?>
+</code></pre>
+
+Не забудем также небольшую функцию транслита для СЕО-дружественности категорий и товаров.
+<pre><code class="language-php">
+function translit($s) {
+		  $s = (string) $s; 
+		  $s = strip_tags($s); 
+		  $s = str_replace(array("\n", "\r"), " ", $s); 
+		  $s = preg_replace("/\s+/", ' ', $s); 
+		  $s = trim($s); 
+		  $s = function_exists('mb_strtolower') ? mb_strtolower($s) : strtolower($s); // переводим строку в нижний регистр (иногда надо задать локаль)
+		  $s = strtr($s, array('а'=>'a','б'=>'b','в'=>'v','г'=>'g','д'=>'d','е'=>'e','ё'=>'e','ж'=>'j','з'=>'z','и'=>'i','й'=>'y','к'=>'k','л'=>'l','м'=>'m','н'=>'n','о'=>'o','п'=>'p','р'=>'r','с'=>'s','т'=>'t','у'=>'u','ф'=>'f','х'=>'h','ц'=>'c','ч'=>'ch','ш'=>'sh','щ'=>'shch','ы'=>'y','э'=>'e','ю'=>'yu','я'=>'ya','ъ'=>'','ь'=>''));
+		  $s = preg_replace("/[^0-9a-z-_ ]/i", "", $s); 
+		  $s = str_replace(" ", "_", $s); 
+  return $s; 
+}
+
+?>
+</code></pre>
+Не забываем почистить массивы, а то есть подозрения, что с <code class="language-php"> unset()</code> чистильщик работает шустрее, скрипт работает шустрее. И собственно результатю
+
+<img src="./img/posts/opencart_products.jpg">
+
+Спасибо за внимание
